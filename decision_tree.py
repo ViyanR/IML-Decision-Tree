@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import sys
 
 LABEL_COLUMN = 7
@@ -9,12 +10,11 @@ def load_dataset(filepath):
 
 def decision_tree_learning(dataset, depth):
     labels = dataset[:, 7]
-    print(dataset)
     
     if np.all(labels[0] == labels):
         # Base Case
         # Return leaf node with this value, depth
-        return {"class": labels[0]}
+        return ({"class": labels[0]}, depth+1)
     else:
         # Recursive case
         # Find the optimum split
@@ -65,8 +65,10 @@ def entropy(dataset):
         label = str(int(label))
         label_counts[label] = label_counts.get(label, 0) + 1
     for i in range(1, 7):
-        probability = label_counts.get(str(i), 0)/len(labels)
-        ans += probability * np.log2(probability)
+        label_freq = label_counts.get(str(i), 0)
+        if label_freq != 0:
+            probability = label_counts.get(str(i), 0)/len(labels)
+            ans += probability * math.log(probability, 2)
     ans *= -1
     return ans
 
@@ -90,4 +92,5 @@ if __name__ == "__main__":
         print("dataset filepath needed")
     else:
         dataset = load_dataset(sys.argv[1])
-        decision_tree_learning(dataset, 1)
+        node = decision_tree_learning(dataset, 1)
+        print(node)
