@@ -7,7 +7,7 @@ def load_dataset(filepath):
     data = np.loadtxt(filepath)
     return data
 
-def decision_tree_learning(dataset: np.ndarray, depth: int):
+def decision_tree_learning(dataset, depth):
     labels = dataset[:, 7]
     print(labels)
     
@@ -25,7 +25,7 @@ def decision_tree_learning(dataset: np.ndarray, depth: int):
         root_node["right"], r_depth = decision_tree_learning(right_data, depth+1)
         return (root_node, max(l_depth, r_depth))
 
-def find_split(dataset: np.ndarray) -> (dict, np.ndarray, np.ndarray):
+def find_split(dataset):
     node = {}
     maxIg = 0
     maxIgAttribute = None
@@ -42,7 +42,7 @@ def find_split(dataset: np.ndarray) -> (dict, np.ndarray, np.ndarray):
 
     return node
 
-def find_split_value(dataset: np.ndarray, attribute: int):
+def find_split_value(dataset, attribute):
         attributeValues = dataset[:, attribute]
         sortedAttributeValues = np.sort(attributeValues)
         for i in range(len(sortedAttributeValues)-1):
@@ -51,7 +51,7 @@ def find_split_value(dataset: np.ndarray, attribute: int):
         print(labels)
         return(5, 2)
 
-def split_data(attribute: int, value: float) -> tuple[np.ndarray, np.ndarray]:
+def split_data(attribute, value):
     left_data = data[data[:, attribute] < value]
     right_data = data[data[:, attribute] >= value]
     return (left_data, right_data)
