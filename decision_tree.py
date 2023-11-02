@@ -1,6 +1,8 @@
 import numpy as np
 import math
 import sys
+import matplotlib.pyplot as plt
+from visualise import visualise_tree
 
 LABEL_COLUMN = 7
 NUMBER_OF_FOLDS = 10
@@ -159,16 +161,22 @@ def traverse_tree(sample, trained_tree):
     else:
         return traverse_tree(sample, trained_tree["right"])
 
+
 if __name__ == "__main__":
     if sys.argv[1] == None:
         print("dataset filepath needed")
     else:
         dataset = load_dataset(sys.argv[1])
-        # node = decision_tree_learning(dataset, 1)
+        (trained_tree, depth) = decision_tree_learning(dataset, 1)
+        plt.figure(figsize=(17,8))
+        visualise_tree(trained_tree)
+        plt.axis('off')
+        plt.show()
         # print(node)
-        (avg_confusion_matrix, avg_precision, avg_recall, avg_f1) = cross_validate(dataset)
-        print(avg_confusion_matrix)
-        print(avg_precision)
-        print(avg_recall)
-        print(avg_f1)
+        # (avg_confusion_matrix, avg_precision, avg_recall, avg_f1) = cross_validate(dataset)
+        # print(avg_confusion_matrix)
+        # print(avg_precision)
+        # print(avg_recall)
+        # print(avg_f1)
+
     
