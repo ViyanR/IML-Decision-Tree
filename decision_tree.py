@@ -150,7 +150,6 @@ if __name__ == "__main__":
         visualise_tree(trained_tree)
         plt.axis('off')
         plt.show()
-        # print(node)
         (avg_confusion_matrix, avg_precision, avg_recall, avg_f1, accuracy) = cross_validate(dataset)
         print("Confusion Matrix:")
         print(avg_confusion_matrix)
