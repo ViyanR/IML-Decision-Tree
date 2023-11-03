@@ -11,14 +11,10 @@ git clone https://github.com/ViyanR/IML-Decision-Tree.git
 ## Downloading Dependencies
 1. Download Python 3.12.0
 2. Download pip3
-3. The following commands are for downloading the numpy and matplotlib packages respectively:
-
-```sh
-pip3 install numpy
-```
+3. The following commands are for downloading the required Python packages:
 
 ```sh 
-pip3 install matplotlib
+pip3 install -r requirements.txt
 ```
 
 ## Running the program
