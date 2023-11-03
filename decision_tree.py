@@ -67,7 +67,6 @@ def entropy(dataset):
             probability = label_counts.get(str(i), 0)/len(labels)
             ans += probability * math.log(probability, 2)
     ans *= -1
-    print(f"entropy: {ans}")
     return ans
 
 # Split the dataset into two by comparing an attribute with a value
@@ -152,17 +151,17 @@ if __name__ == "__main__":
         plt.axis('off')
         plt.show()
         # print(node)
-        # (avg_confusion_matrix, avg_precision, avg_recall, avg_f1, accuracy) = cross_validate(dataset)
-        # print("Confusion Matrix:")
-        # print(avg_confusion_matrix)
-        # print("Precision:")
-        # print(avg_precision)
-        # print("Recall:")
-        # print(avg_recall)
-        # print("f1:")
-        # print(avg_f1)
-        # print("Accuracy:")
-        # print(accuracy)
+        (avg_confusion_matrix, avg_precision, avg_recall, avg_f1, accuracy) = cross_validate(dataset)
+        print("Confusion Matrix:")
+        print(avg_confusion_matrix)
+        print("Precision:")
+        print(avg_precision)
+        print("Recall:")
+        print(avg_recall)
+        print("f1:")
+        print(avg_f1)
+        print("Accuracy:")
+        print(accuracy)
 
 
     
