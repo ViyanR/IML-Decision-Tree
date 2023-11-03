@@ -20,7 +20,7 @@ def decision_tree_learning(dataset, depth):
     if np.all(labels[0] == labels):
         # Base Case
         # Return leaf node with this value, depth
-        return ({"class": labels[0]}, depth+1)
+        return ({"class": labels[0]}, depth)
     else:
         # Recursive case
         # Find the optimum split
@@ -32,40 +32,25 @@ def decision_tree_learning(dataset, depth):
 
 # Go through each attribute, and find which attribute gives the optimal information gain. Return
 # the attribute and split value as a node
-def find_split(dataset):
-    node = {}
-    maxIg = 0
-    maxIgAttribute = None
-    maxIgValue = None
-    
-    for attribute in range(LABEL_COLUMN):
-        (value, ig) = find_split_value(dataset, attribute)
-        if ig > maxIg:
-            maxIgValue = value
-            maxIgAttribute = attribute
-
-    node["attribute"] = maxIgAttribute
-    node["value"] = maxIgValue
-
+def find_split(training_data):
+    data_entropy = entropy(training_data)
+    max_info_gain, attribute, value = -1, 0, 0;
+    for i in range(len(training_data[0]) - 1):
+        sorted_data = training_data[training_data[:, i].argsort()]
+        for j in range(len(training_data) - 1):
+            if sorted_data[j][i] != sorted_data[j+1][i]:
+                split = (sorted_data[j][i] + sorted_data[j+1][i])/2
+                info_gain = information_gain(data_entropy, sorted_data[:j+1], sorted_data[j+1:])
+                if info_gain > max_info_gain:
+                    max_info_gain, attribute, value = info_gain, i, split
+    node = {"attribute": attribute, "value": value}
     return node
 
-# Take in an attribute and dataset, then find the split value which gives the optimal information
-# gain. Return the split value and the information gain.
-def find_split_value(dataset, attribute):
-        attributeValues = dataset[:, attribute]
-        sortedAttributeValues = np.sort(attributeValues)
-        maxIg = 0
-        maxIgValue = None
-        
-        for i in range(len(sortedAttributeValues)-1):
-            split_value = (sortedAttributeValues[i] + sortedAttributeValues[i+1])/2
-            (left_data, right_data) = split_data(dataset, attribute, split_value)
-            ig = entropy(dataset) - remainder(left_data, right_data)
-            if ig > maxIg:
-                maxIg = ig
-                maxIgValue = split_value
-            
-        return(maxIgValue, maxIg)
+def information_gain(data_entropy, left_subset, right_subset):
+    data_size = len(left_subset) + len(right_subset)
+    left_entropy = entropy(left_subset)
+    right_entropy = entropy(right_subset)
+    return data_entropy - ((len(left_subset) / data_size) * left_entropy + (len(right_subset)/ data_size) * right_entropy)         
 
 # Calculate the entropy of a dataset
 def entropy(dataset):
@@ -81,6 +66,7 @@ def entropy(dataset):
             probability = label_counts.get(str(i), 0)/len(labels)
             ans += probability * math.log(probability, 2)
     ans *= -1
+    print(f"entropy: {ans}")
     return ans
 
 
@@ -102,8 +88,10 @@ def split_data(data, attribute, value):
 # 10-fold cross validation of data
 def cross_validate(data):
     k = NUMBER_OF_FOLDS
+    np.random.seed(1)
     np.random.shuffle(data)
     split = np.split(data, k)
+
 
     avg_confusion_matrix = np.zeros((NUMBER_OF_ROOMS,NUMBER_OF_ROOMS))
     avg_precision = np.zeros(NUMBER_OF_ROOMS)
@@ -125,8 +113,12 @@ def cross_validate(data):
     avg_precision /= NUMBER_OF_FOLDS
     avg_recall /= NUMBER_OF_FOLDS
     avg_f1 /= NUMBER_OF_FOLDS
+
+    correct = np.trace(avg_confusion_matrix)
+    all_elements = np.sum(avg_confusion_matrix)
+    accuracy = correct / all_elements
     
-    return (avg_confusion_matrix, avg_precision, avg_recall, avg_f1)
+    return (avg_confusion_matrix, avg_precision, avg_recall, avg_f1, accuracy)
 
 # Find the confusion matrix, precision, recall and f1 of a given trained decision tree
 def evaluate(test_db, trained_tree):
@@ -135,10 +127,6 @@ def evaluate(test_db, trained_tree):
     for sample in test_db:
         room = traverse_tree(sample, trained_tree)
         confusion_matrix[int(sample[LABEL_COLUMN]) - 1, int(room) - 1] += 1
-
-    correct = np.trace(confusion_matrix)
-    all_elements = np.sum(confusion_matrix)
-    accuracy = correct / all_elements
 
     precision_arr = np.zeros(NUMBER_OF_ROOMS)
     recall_arr = np.zeros(NUMBER_OF_ROOMS)
@@ -167,16 +155,23 @@ if __name__ == "__main__":
         print("dataset filepath needed")
     else:
         dataset = load_dataset(sys.argv[1])
-        (trained_tree, depth) = decision_tree_learning(dataset, 1)
-        plt.figure(figsize=(17,8))
-        visualise_tree(trained_tree)
-        plt.axis('off')
-        plt.show()
+        # (trained_tree, depth) = decision_tree_learning(dataset, 1)
+        # plt.figure(figsize=(17,8))
+        # visualise_tree(trained_tree)
+        # plt.axis('off')
+        # plt.show()
         # print(node)
-        # (avg_confusion_matrix, avg_precision, avg_recall, avg_f1) = cross_validate(dataset)
-        # print(avg_confusion_matrix)
-        # print(avg_precision)
-        # print(avg_recall)
-        # print(avg_f1)
+        (avg_confusion_matrix, avg_precision, avg_recall, avg_f1, accuracy) = cross_validate(dataset)
+        print("Confusion Matrix:")
+        print(avg_confusion_matrix)
+        print("Precision:")
+        print(avg_precision)
+        print("Recall:")
+        print(avg_recall)
+        print("f1:")
+        print(avg_f1)
+        print("Accuracy:")
+        print(accuracy)
+
 
     
