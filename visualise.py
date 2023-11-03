@@ -21,7 +21,7 @@ def visualise_tree(trained_tree, ax=None,indent_x=0.5,indent_y=1, parent_pos=Non
         #             xytext=(indent_x, indent_y), textcoords='offset points',
         #             ha="center", va="center", bbox=dict(boxstyle="round,pad=0", fc="lightgray"))
         # annotation.set_fontsize(7)
-        annotation = plt.text(indent_x, indent_y, f"{trained_tree['attribute']} < {trained_tree['value']}", ha="center", va="center", fontsize=6, fontweight="bold", backgroundcolor="brown", picker=True)
+        annotation = plt.text(indent_x, indent_y, f"{trained_tree['attribute']} < {trained_tree['value']}", ha="center", va="center", fontsize=6, fontweight="bold", backgroundcolor="beige", picker=True)
         pos = annotation.get_position()
         node_pos.add(pos)
         # print(pos)

@@ -46,6 +46,7 @@ def find_split(training_data):
     node = {"attribute": attribute, "value": value}
     return node
 
+# Find information gained during a data split. Takes in starting data entropy, left subset and right subset as parameters
 def information_gain(data_entropy, left_subset, right_subset):
     data_size = len(left_subset) + len(right_subset)
     left_entropy = entropy(left_subset)
@@ -68,16 +69,6 @@ def entropy(dataset):
     ans *= -1
     print(f"entropy: {ans}")
     return ans
-
-
-def remainder(left_data, right_data):
-    left_size, _ = left_data.shape
-    right_size, _ = right_data.shape
-    
-    left_remainder = left_size/(left_size + right_size) * entropy(left_data)
-    right_remainder = right_size/(left_size+right_size) * entropy(right_data)
-    
-    return left_remainder + right_remainder
 
 # Split the dataset into two by comparing an attribute with a value
 def split_data(data, attribute, value):
@@ -155,23 +146,23 @@ if __name__ == "__main__":
         print("dataset filepath needed")
     else:
         dataset = load_dataset(sys.argv[1])
-        # (trained_tree, depth) = decision_tree_learning(dataset, 1)
-        # plt.figure(figsize=(17,8))
-        # visualise_tree(trained_tree)
-        # plt.axis('off')
-        # plt.show()
+        (trained_tree, depth) = decision_tree_learning(dataset, 1)
+        plt.figure(figsize=(17,8))
+        visualise_tree(trained_tree)
+        plt.axis('off')
+        plt.show()
         # print(node)
-        (avg_confusion_matrix, avg_precision, avg_recall, avg_f1, accuracy) = cross_validate(dataset)
-        print("Confusion Matrix:")
-        print(avg_confusion_matrix)
-        print("Precision:")
-        print(avg_precision)
-        print("Recall:")
-        print(avg_recall)
-        print("f1:")
-        print(avg_f1)
-        print("Accuracy:")
-        print(accuracy)
+        # (avg_confusion_matrix, avg_precision, avg_recall, avg_f1, accuracy) = cross_validate(dataset)
+        # print("Confusion Matrix:")
+        # print(avg_confusion_matrix)
+        # print("Precision:")
+        # print(avg_precision)
+        # print("Recall:")
+        # print(avg_recall)
+        # print("f1:")
+        # print(avg_f1)
+        # print("Accuracy:")
+        # print(accuracy)
 
 
     
